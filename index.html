@@ -287,7 +287,7 @@
       fetch(WORKER_URL, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({name: name, clinic: clinic, contact: contact, losses: calc()})
+        body: JSON.stringify({text: text})
       })
       .then(function(res){ return res.json(); })
       .then(function(data){
