@@ -137,9 +137,8 @@
 
 <script>
 (function(){
-  var BOT_TOKEN = '8850663980:AAG78kGEQWEUqFhXJ3CIXymsEyq5j8TzoK4';
-  var CHAT_ID   = '247253441';
-  var TG_USER   = 'sysoeva_nata';
+  var WORKER_URL = 'https://klinika-bot.antalia.workers.dev/';
+  var TG_USER    = 'sysoeva_nata';
 
   var Q = [
     { id:'spec', q:'Сколько детских и смежных специалистов ведут приём?',
@@ -285,10 +284,10 @@
 
       var text = buildMsg(name, clinic, contact, calc());
 
-      fetch('https://api.telegram.org/bot'+BOT_TOKEN+'/sendMessage', {
+      fetch(WORKER_URL, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({chat_id: CHAT_ID, text: text})
+        body: JSON.stringify({name: name, clinic: clinic, contact: contact, losses: calc()})
       })
       .then(function(res){ return res.json(); })
       .then(function(data){
