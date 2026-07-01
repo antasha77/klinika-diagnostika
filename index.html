@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Где ваша клиника теряет деньги</title>
+<script src="https://forms.yandex.ru/_static/embed.js"></script>
 <style>
   :root{
     --ink:#15233b;
@@ -88,34 +89,14 @@
   }
   .extra b{color:var(--go)}
   .disc{font-size:12.5px;color:var(--slate);margin-top:18px;line-height:1.45}
-  .cta{
-    margin-top:18px;background:var(--ink);color:#fff;border-radius:var(--radius);padding:22px;
+  .ya-form-wrap{margin-top:22px}
+  .ya-form-wrap h3{
+    font-size:17px;font-weight:700;color:var(--ink);margin:0 0 14px;line-height:1.3;
   }
-  .cta h3{margin:0 0 4px;font-size:18px}
-  .cta p{margin:0 0 16px;font-size:14px;color:#c5cee0}
-  .field{margin-bottom:11px}
-  .field label{display:block;font-size:12.5px;color:#aab6cf;margin-bottom:5px;font-weight:600}
-  .field input{
-    width:100%;padding:12px 14px;border-radius:10px;border:1px solid #2c3c58;
-    background:#0f1a2e;color:#fff;font-size:15px;font-family:inherit;
+  .ya-form-wrap iframe{
+    width:100%;max-width:100%;border:none;display:block;
+    min-height:480px;
   }
-  .field input:focus{outline:2px solid var(--money);outline-offset:1px;border-color:var(--money)}
-  .btn{
-    width:100%;padding:14px;border:none;border-radius:10px;background:var(--money);
-    color:#15233b;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:6px;
-    transition:opacity .15s;
-  }
-  .btn:active{transform:scale(.995)}
-  .btn:disabled{opacity:.55;cursor:default}
-  .done{
-    background:var(--go-soft);border:1px solid #cfe2db;border-radius:11px;
-    padding:18px 16px;margin-top:14px;font-size:14px;color:#194d41;line-height:1.55;
-  }
-  .done-err{
-    background:#fdecea;border:1px solid #f5c6c6;border-radius:11px;
-    padding:18px 16px;margin-top:14px;font-size:14px;color:#7a2020;line-height:1.55;
-  }
-  .done-err a{color:var(--money)}
   .restart{display:block;margin:18px auto 0;background:none;border:none;color:var(--slate);font-size:13px;cursor:pointer;text-decoration:underline}
   .protonote{font-size:12px;color:var(--slate);text-align:center;margin-top:22px;border-top:1px dashed var(--line);padding-top:16px}
   @media (prefers-reduced-motion: reduce){*{transition:none!important}}
@@ -137,9 +118,6 @@
 
 <script>
 (function(){
-  var WORKER_URL = 'https://klinika-bot.antalia.workers.dev/';
-  var TG_USER    = 'sysoeva_nata';
-
   var Q = [
     { id:'spec', q:'Сколько детских и смежных специалистов ведут приём?',
       opts:[ ['1–2',2],['3–5',4],['6 и больше',7] ] },
@@ -205,27 +183,6 @@
     return {empty:empty, noshow:noshow, churn:churn, monthly:monthly, baseWave:baseWave};
   }
 
-  function buildMsg(name, clinic, contact, r){
-    var lines = [
-      '📋 Заявка на разбор потерь клиники',
-      '',
-      '👤 Имя: '+(name||'—'),
-      '🏥 Клиника: '+(clinic||'—'),
-      '📞 Контакт: '+(contact||'—'),
-      '',
-      '💸 Оценка потерь: '+fmt(r.monthly)+'/мес',
-      '  • Пустые окна: '+fmt(r.empty),
-      '  • No-show: '+fmt(r.noshow),
-      '  • Отток: '+fmt(r.churn)
-    ];
-    if(r.baseWave > 0) lines.push('  • Потенциал базы: '+fmt(r.baseWave));
-    return lines.join('\n');
-  }
-
-  function escHtml(s){
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
   function renderReveal(){
     setProg(1);
     var r = calc();
@@ -248,15 +205,10 @@
 
     html += '<p class="disc">Это оценка по усреднённой модели, а не аудит. Точные цифры считаются по данным клиники — на 20-минутном разборе мы заменим допущения вашими реальными показателями.</p>';
 
-    html += '<div class="cta">'
-      +'<h3>Получить точный разбор по вашей клинике</h3>'
-      +'<p>Покажу, где именно теряются записи и как собрать это в маршрут за 30 дней. Бесплатно, 20 минут.</p>'
-      +'<div class="field"><label>Имя</label><input id="f_name" placeholder="Как к вам обращаться" autocomplete="name"></div>'
-      +'<div class="field"><label>Клиника и город</label><input id="f_clinic" placeholder="Например: КитаМед, Тверь"></div>'
-      +'<div class="field"><label>Телефон или Telegram</label><input id="f_contact" placeholder="@username или +7…" autocomplete="tel"></div>'
-      +'<button class="btn" id="send">Записаться на разбор →</button>'
+    html += '<div class="ya-form-wrap">'
+      +'<h3>Получите точный разбор по вашей клинике — оставьте контакт</h3>'
+      +'<iframe src="https://forms.yandex.ru/u/6a44ee9795add504d2414e19?iframe=1" frameborder="0" name="ya-form-6a44ee9795add504d2414e19"></iframe>'
       +'</div>'
-      +'<div id="after"></div>'
       +'<button class="restart" id="restart">Пройти заново</button>';
 
     screen.innerHTML = html;
@@ -265,43 +217,6 @@
     requestAnimationFrame(function(){
       screen.querySelectorAll('.track > i').forEach(function(el){
         el.style.width = el.getAttribute('data-w')+'%';
-      });
-    });
-
-    document.getElementById('send').addEventListener('click', function(){
-      var btn     = this;
-      var name    = (document.getElementById('f_name').value||'').trim();
-      var clinic  = (document.getElementById('f_clinic').value||'').trim();
-      var contact = (document.getElementById('f_contact').value||'').trim();
-      var after   = document.getElementById('after');
-
-      if(!contact){
-        var inp = document.getElementById('f_contact');
-        inp.focus(); inp.style.outline = '2px solid #e05a3a'; return;
-      }
-
-      btn.disabled = true; btn.textContent = 'Отправляем…';
-
-      var text = buildMsg(name, clinic, contact, calc());
-
-      fetch(WORKER_URL, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({text: text})
-      })
-      .then(function(res){ return res.json(); })
-      .then(function(data){
-        if(!data.ok) throw new Error(data.description||'error');
-        after.innerHTML = '<div class="done">'
-          +'✅ '+(name ? name+', з' : 'З')+'аявка отправлена!<br>'
-          +'Наталья свяжется с вами по контакту: <b>'+escHtml(contact)+'</b>.</div>';
-        btn.textContent = 'Заявка отправлена';
-      })
-      .catch(function(){
-        after.innerHTML = '<div class="done-err">'
-          +'⚠️ Не удалось отправить автоматически. Напишите напрямую: '
-          +'<a href="https://t.me/'+TG_USER+'" target="_blank">@'+TG_USER+'</a></div>';
-        btn.disabled = false; btn.textContent = 'Записаться на разбор →';
       });
     });
 
